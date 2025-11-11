@@ -113,7 +113,7 @@ ipython_config.py
 #   pdm recommends including project-wide configuration in pdm.toml, but excluding .pdm-python.
 #   https://pdm-project.org/en/latest/usage/project/#working-with-version-control
 #pdm.lock
-#pdm.toml
+#pdm.tomlF
 .pdm-python
 .pdm-build/
 
@@ -205,3 +205,6 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+1111/
+min_ds-env.yml

@@ -315,13 +315,16 @@ if __name__ == "__main__":
     # MAX_PARALLELS = 3
     # SAVE_DIR = "./36"
     
-    # # Nam Việt 
-    # START_MONTH = "2023-05"
-    # START_ID = 2597
-    # END_MONTH = "2023-05"
+    # lỗi từ 3715
+    # Nam Việt 
+
     # END_ID = 5596
-    # MAX_PARALLELS = 3
-    # SAVE_DIR = "./1111"
+    START_MONTH = "2023-05"
+    START_ID = 2597
+    END_MONTH = "2023-05"
+    END_ID = 2633
+    MAX_PARALLELS = 3
+    SAVE_DIR = "./1111"
     
     # # Nhân 1
     # START_MONTH = "2023-05"
