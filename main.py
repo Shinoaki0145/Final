@@ -349,12 +349,12 @@ if __name__ == "__main__":
     # SAVE_DIR = "./23127238"
     
     
-    START_MONTH = "2023-04"
-    START_ID = 1
-    END_MONTH = "2023-04"
-    END_ID = 15
-    MAX_PARALLELS = 3
-    SAVE_DIR = "./36"
+    # START_MONTH = "2023-04"
+    # START_ID = 1
+    # END_MONTH = "2023-04"
+    # END_ID = 15
+    # MAX_PARALLELS = 3
+    # SAVE_DIR = "./36"
     
     run_parallel_processing(
         start_month=START_MONTH,
