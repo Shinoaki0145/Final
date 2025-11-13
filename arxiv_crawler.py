@@ -84,18 +84,19 @@ def crawl_single_paper(arxiv_id, save_dir=SAVE_DIR):
         save_dir: Directory to save the paper data
     
     Returns:
-        bool: True if successful, False otherwise
+        tuple: (bool success, int total_size_before) - success status and total size before cleaning
     """
     client = arxiv.Client()
     paper_folder = None
     tex_folder = None
     versions_processed = 0
     latest_version = 0
+    total_size_before = 0  # Track total size of all tar.gz files before extraction
 
     # --- Validate and split ID ---
     if '.' not in arxiv_id:
         print(f"X Invalid arxiv_id: {arxiv_id}")
-        return False
+        return False, 0
 
     prefix, suffix = arxiv_id.split('.')
     paper_folder = os.path.join(save_dir, f"{prefix}-{suffix}")
@@ -111,10 +112,10 @@ def crawl_single_paper(arxiv_id, save_dir=SAVE_DIR):
         print(f"[{arxiv_id}] Found {latest_version} version(s)")
     except StopIteration:
         print(f"X [{arxiv_id}] Paper not found")
-        return False
+        return False, 0
     except Exception as e:
         print(f"X [{arxiv_id}] Error finding latest version: {e}")
-        return False
+        return False, 0
 
     # --- Collect metadata from v1 ---
     title = base_paper.title
@@ -122,7 +123,7 @@ def crawl_single_paper(arxiv_id, save_dir=SAVE_DIR):
     submission_date = base_paper.published.strftime("%Y-%m-%d") if base_paper.published else None
     publication_venue = base_paper.journal_ref if base_paper.journal_ref else None
     categories = base_paper.categories
-    abstract = base_paper.summary.replace("\n", " ").strip()
+    abstract = (base_paper.summary or "").replace("\n", " ").strip()
     pdf_url = base_paper.pdf_url
     revised_dates = []
 
@@ -147,8 +148,8 @@ def crawl_single_paper(arxiv_id, save_dir=SAVE_DIR):
         "publication_venue": publication_venue,
         "latest_version": latest_version,
         "categories": categories,
-        "abstract": abstract,
-        "pdf_url": pdf_url,
+        # "abstract": abstract,
+        # "pdf_url": pdf_url,
     }
 
     metadata_path = os.path.join(paper_folder, "metadata.json")
@@ -158,7 +159,7 @@ def crawl_single_paper(arxiv_id, save_dir=SAVE_DIR):
         print(f"  [{arxiv_id}] Saved metadata.json")
     except Exception as e:
         print(f"X [{arxiv_id}] Failed to save metadata: {e}")
-        return False
+        return False, 0
 
     # --- Download all versions into tex folder ---
     for v in range(1, latest_version + 1):
@@ -172,6 +173,11 @@ def crawl_single_paper(arxiv_id, save_dir=SAVE_DIR):
 
             print(f"  [{arxiv_id}] Downloading {version_id}...")
             paper_v.download_source(dirpath=paper_folder, filename=f"{version_id}.tar.gz")
+
+            # Track size before extraction
+            if os.path.exists(temp_tar):
+                tar_size = os.path.getsize(temp_tar)
+                total_size_before += tar_size
 
             # --- Extract & Clean into tex folder ---
             file_name, success, deleted_count, ftype = extract_and_clean(temp_tar, tex_folder, version_folder_name)
@@ -204,4 +210,4 @@ def crawl_single_paper(arxiv_id, save_dir=SAVE_DIR):
     else:
         print(f"X [{arxiv_id}] FAILED - no versions downloaded")
 
-    return success
+    return success, total_size_before

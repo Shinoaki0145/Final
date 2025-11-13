@@ -1,3 +1,3 @@
 arxiv>=2.1.0
 requests>=2.31.0
-python=3.11.5
+psutil>=5.9.0
