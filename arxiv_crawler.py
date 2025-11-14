@@ -92,7 +92,7 @@ def crawl_single_paper(arxiv_id, save_dir=SAVE_DIR):
     versions_processed = 0
     latest_version = 0
 
-    # --- Validate and split ID ---
+    # Validate and split ID
     if '.' not in arxiv_id:
         print(f"X Invalid arxiv_id: {arxiv_id}")
         return False
@@ -102,7 +102,7 @@ def crawl_single_paper(arxiv_id, save_dir=SAVE_DIR):
     tex_folder = os.path.join(paper_folder, "tex")
     os.makedirs(tex_folder, exist_ok=True)
 
-    # --- Get latest version from v1 ---
+    # Get latest version from v1
     try:
         search = arxiv.Search(id_list=[arxiv_id])
         base_paper = next(client.results(search))
@@ -126,7 +126,7 @@ def crawl_single_paper(arxiv_id, save_dir=SAVE_DIR):
     pdf_url = base_paper.pdf_url
     revised_dates = []
 
-    # --- Get revised dates for v2..vN ---
+    # Get revised dates for v2..vN
     if latest_version > 1:
         for v in range(2, latest_version + 1):
             try:
@@ -137,7 +137,6 @@ def crawl_single_paper(arxiv_id, save_dir=SAVE_DIR):
             except:
                 revised_dates.append(None)
 
-    # --- Save metadata.json ---
     metadata = {
         "arxiv_id": arxiv_id.replace('.', '-'),
         "paper_title": title,
@@ -160,7 +159,7 @@ def crawl_single_paper(arxiv_id, save_dir=SAVE_DIR):
         print(f"X [{arxiv_id}] Failed to save metadata: {e}")
         return False
 
-    # --- Download all versions into tex folder ---
+    # Download all versions into tex folder
     for v in range(1, latest_version + 1):
         version_id = f"{arxiv_id}v{v}"
         version_folder_name = f"{prefix}-{suffix}v{v}"
@@ -173,7 +172,7 @@ def crawl_single_paper(arxiv_id, save_dir=SAVE_DIR):
             print(f"  [{arxiv_id}] Downloading {version_id}...")
             paper_v.download_source(dirpath=paper_folder, filename=f"{version_id}.tar.gz")
 
-            # --- Extract & Clean into tex folder ---
+            # Extract & Clean into tex folder
             file_name, success, deleted_count, ftype = extract_and_clean(temp_tar, tex_folder, version_folder_name)
 
             if success:
@@ -182,7 +181,7 @@ def crawl_single_paper(arxiv_id, save_dir=SAVE_DIR):
             else:
                 print(f"X [{arxiv_id}] Failed to extract {version_id}")
 
-            # --- Delete .tar.gz ---
+            # Delete .tar.gz
             try:
                 os.remove(temp_tar)
             except:
@@ -197,7 +196,7 @@ def crawl_single_paper(arxiv_id, save_dir=SAVE_DIR):
             print(f"X [{arxiv_id}] Download error {version_id}: {e}")
             continue
 
-    # --- Final check ---
+    # Final check
     success = (versions_processed > 0)
     if success:
         print(f"✓ [{arxiv_id}] COMPLETED ({versions_processed}/{latest_version} versions)")
