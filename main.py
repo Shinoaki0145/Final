@@ -35,10 +35,10 @@ def process_paper(arxiv_id, save_dir="./23127238"):
     print(f"Processing paper: {arxiv_id}")
     print(f"{'='*80}")
     
-    # Step 1: Crawl paper data
+    # Crawl paper data
     crawler_success = crawl_single_paper(arxiv_id, save_dir)
     
-    # Step 2: Extract references (only if crawler succeeded)
+    # Extract references (only if crawler succeeded)
     references_success = False
     if crawler_success:
         references_success = extract_references_for_paper(arxiv_id, save_dir)
@@ -56,7 +56,7 @@ def process_paper(arxiv_id, save_dir="./23127238"):
             stats["references_failed"] += 1
         elif not crawler_success:
             stats["crawler_failed"] += 1
-            if references_success:  # Unlikely but handle it
+            if references_success:
                 stats["only_references_success"] += 1
             else:
                 stats["both_failed"] += 1
@@ -66,7 +66,7 @@ def process_paper(arxiv_id, save_dir="./23127238"):
 
 def check_paper_exists(arxiv_id, save_dir="./23127238"):
     """
-    Check if a paper exists by attempting to crawl it.
+    Check if a paper exists by attempting to crawl it
     
     Args:
         arxiv_id: arXiv ID in format yymm.nnnnn
@@ -93,7 +93,7 @@ def check_paper_exists(arxiv_id, save_dir="./23127238"):
 
 def find_last_valid_id(prefix, start_id, save_dir="./23127238"):
     """
-    Find the last valid paper ID in a month by checking consecutive failures.
+    Find the last valid paper ID in a month by checking consecutive failures
     
     Args:
         prefix: Month prefix (e.g., "2305")
@@ -127,7 +127,7 @@ def find_last_valid_id(prefix, start_id, save_dir="./23127238"):
             print(f"X Paper not found: {arxiv_id} (failure {consecutive_failures}/{max_consecutive_failures})")
         
         current_id += 1
-        time.sleep(0.5)  # Be nice to arXiv
+        time.sleep(1)  # Be nice to arXiv
     
     print(f"\n{'='*80}")
     print(f"Last valid ID found: {prefix}.{last_valid_id:05d}")
@@ -138,7 +138,7 @@ def find_last_valid_id(prefix, start_id, save_dir="./23127238"):
 
 def generate_paper_ids(start_month, start_id, end_month, end_id, save_dir="./23127238"):
     """
-    Generate list of arXiv IDs based on date range.
+    Generate list of arXiv IDs based on date range
     
     Args:
         start_month: Start month in format "YYYY-MM"
@@ -292,69 +292,14 @@ def run_parallel_processing(start_month, start_id, end_month, end_id,
     print_final_report()
 
 
-# ==============================
-# MAIN
-# ==============================
-
 if __name__ == "__main__":
-    # === CONFIGURATION ===
-    
-    # # Đạt 1
-    # START_MONTH = "2023-04"
-    # START_ID = 14607
-    # END_MONTH = "2023-04"
-    # END_ID = 15010
-    # MAX_PARALLELS = 3
-    # SAVE_DIR = "./36"
-    
-    # # Đạt 2
+    # # CONFIGURATION
     # START_MONTH = "2023-05"
     # START_ID = 1
     # END_MONTH = "2023-05"
-    # END_ID = 2596
-    # MAX_PARALLELS = 3
-    # SAVE_DIR = "./36"
-    
-    # # Nam Việt 
-    # START_MONTH = "2023-05"
-    # START_ID = 2597
-    # END_MONTH = "2023-05"
-    # END_ID = 5596
-    # MAX_PARALLELS = 3
-    # SAVE_DIR = "./1111"
-    
-    # # Nhân 1
-    # START_MONTH = "2023-05"
-    # START_ID = 5597
-    # END_MONTH = "2023-05"
-    # END_ID = 8596
-    # MAX_PARALLELS = 3
-    # SAVE_DIR = "./23127238"
-    
-    # # Nhân 2
-    # START_MONTH = "2023-05"
-    # START_ID = 8597
-    # END_MONTH = "2023-05"
-    # END_ID = 11596
-    # MAX_PARALLELS = 3
-    # SAVE_DIR = "./23127238"
-    
-    
-    # # Nhân 3
-    # START_MONTH = "2023-05"
-    # START_ID = 11597
-    # END_MONTH = "2023-05"
-    # END_ID = 14596
-    # MAX_PARALLELS = 3
-    # SAVE_DIR = "./23127238"
-    
-    
-    # START_MONTH = "2023-04"
-    # START_ID = 1
-    # END_MONTH = "2023-04"
     # END_ID = 15
     # MAX_PARALLELS = 3
-    # SAVE_DIR = "./36"
+    # SAVE_DIR = "./data"
     
     run_parallel_processing(
         start_month=START_MONTH,
